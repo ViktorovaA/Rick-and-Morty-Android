@@ -2,6 +2,7 @@ package com.example.kfd_test_project_1.presentation.viewmodel
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
+import com.example.kfd_test_project_1.common.errors.NetworkUnavailableException
 import com.example.kfd_test_project_1.domain.entity.CharacterEntity
 import com.example.kfd_test_project_1.domain.repository.IRickRepository
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -26,6 +27,9 @@ class CharacterViewModel (
         try {
             val charactersList = repository.getAllCharacters(forceRefresh)
             _characters.value = charactersList
+        } catch (e: NetworkUnavailableException) {
+            _characters.value = repository.getAllCharacters(forceRefresh = false)
+            _isError.value = true
         } catch (e: Exception) {
             _isError.value = true
             Log.d("net", "loadCharacters: ${e.message}")

@@ -1,6 +1,5 @@
 package com.example.kfd_test_project_1.data.service
 
-import android.util.Log
 import com.example.kfd_test_project_1.common.api.NetworkModule
 import com.example.kfd_test_project_1.data.dto.CharacterDTO
 import com.example.kfd_test_project_1.data.dto.CharacterListDTO
@@ -9,13 +8,25 @@ import io.ktor.client.request.get
 
 object RickApiService {
     private const val BASE_URL = "https://rickandmortyapi.com/api"
+    private var page = 1
+    private var maxPage = 1
 
     suspend fun getAllCharacters(): CharacterListDTO {
         try {
-            return NetworkModule.publicClient.get("$BASE_URL/character").body()
+            val response: CharacterListDTO = NetworkModule.publicClient
+                .get("$BASE_URL/character/?page=$page")
+                .body()
+            maxPage = response.info.pages
+            setPage(page + 1)
+            return response
         } catch (e: Exception) {
-            Log.d("net222", "loadCharacters: ${e.message}")
             throw Exception(e)
+        }
+    }
+
+    private fun setPage(new: Int) {
+        if (page in 1..maxPage) {
+            page = new
         }
     }
 

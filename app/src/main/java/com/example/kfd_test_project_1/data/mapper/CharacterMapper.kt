@@ -25,6 +25,7 @@ abstract class CharacterMapper {
         }
         fun mapDTOToModel(dto: CharacterDTO): CharacterModel{
             return CharacterModel(
+                id = dto.id,
                 name = dto.name,
                 image = dto.image,
                 status = dto.status,
